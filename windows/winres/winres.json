@@ -1,0 +1,18 @@
+{
+  "RT_GROUP_ICON": {
+    "APP": {
+      "0000": "../icon.ico"
+    }
+  },
+  "RT_MANIFEST": {
+    "#1": {
+      "0409": {
+        "identity": {},
+        "description": "Jupyter Notebook Launcher",
+        "minimum-os": "win7",
+        "execution-level": "asInvoker",
+        "dpi-awareness": "system"
+      }
+    }
+  }
+}

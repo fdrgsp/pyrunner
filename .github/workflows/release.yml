@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "macos/**"
+      - "windows/**"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make launcher executable
+        run: chmod +x macos/launch
+
+      - name: Set release tag
+        id: tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install go-winres
+        run: |
+          go install github.com/tc-hib/go-winres@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Prepare Windows launcher resources
+        run: |
+          cd windows
+          go-winres make
+          cd ..
+
+      - name: Build packages
+        env:
+          TAG: ${{ steps.tag.outputs.value }}
+        run: |
+          mkdir -p dist
+
+          # macOS (.app bundle)
+          TARGET="dist/juv-launcher-${TAG}-mac/juv-launcher.app/Contents"
+          mkdir -p "$TARGET/MacOS" "$TARGET/Resources"
+          cp macos/Info.plist "$TARGET/Info.plist"
+          cp macos/launch "$TARGET/MacOS/launch"
+          cp macos/icon.icns "$TARGET/Resources/icon.icns"
+          cd dist && zip -r "juv-launcher-${TAG}-mac.zip" "juv-launcher-${TAG}-mac/" && cd ..
+
+          # Windows (.exe)
+          cd windows && GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o "../dist/juv-launcher-${TAG}-windows/juv-launcher.exe" . && cd ..
+          cd dist && zip -r "juv-launcher-${TAG}-windows.zip" "juv-launcher-${TAG}-windows/" && cd ..
+
+      - name: Publish latest pre-release (main push)
+        if: github.ref_type == 'branch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest
+          prerelease: true
+          files: dist/*.zip
+
+      - name: Publish versioned release (tag push)
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: dist/*.zip
