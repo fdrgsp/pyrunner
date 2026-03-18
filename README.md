@@ -99,4 +99,4 @@ uvx marimo edit my_notebook.py
 
 ## Looking to distribute notebooks to others?
 
-Check out [personal-juv-launcher](https://github.com/fdrgsp/personal-juv-launcher) — a GitHub template for packaging notebooks as self-contained `.app`/`.exe` downloads with an auto-generated landing page.
+Check out [personal-notebook-launcher](https://github.com/fdrgsp/personal-notebook-launcher) — a GitHub template for packaging notebooks as self-contained `.app`/`.exe` downloads with an auto-generated landing page.
