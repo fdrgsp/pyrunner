@@ -33,12 +33,16 @@ def _go_test(go_available, run_filter):
 
 # ── selectRunner ───────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("case", [
-    "ipynb_uses_juv",
-    "py_with_marimo_dep_uses_marimo",
-    "py_without_marimo_uses_uv_run",
-    "py_with_empty_content_uses_uv_run",
-    "py_with_marimo_in_comment_string_uses_marimo",
-])
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "ipynb_uses_juv",
+        "py_with_marimo_dep_uses_marimo",
+        "py_without_marimo_uses_uv_run",
+        "py_with_empty_content_uses_uv_run",
+        "py_with_marimo_in_comment_string_uses_marimo",
+    ],
+)
 def test_select_runner(go_available, case):
     _go_test(go_available, f"TestSelectRunner/{case}")

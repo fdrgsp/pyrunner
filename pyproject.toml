@@ -2,7 +2,73 @@
 name = "pyrunner"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["pytest>=8.0"]
+dependencies = [
+    "pytest>=8.0",
+    "rich>=13.9.4",
+    "ruff>=0.8.3",
+    "rust-just>=1.38.0",
+    "mypy>=1.13.0",
+    "prek>=0.3.5",
+    "pyright>=1.1.392.post0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+# https://docs.astral.sh/ruff
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests"]
+fix = true
+unsafe-fixes = true
+
+# https://docs.astral.sh/ruff/rules
+[tool.ruff.lint]
+pydocstyle = { convention = "numpy" }
+select = [
+    "E",    # style errors
+    "W",    # style warnings
+    "F",    # flakes
+    "D",    # pydocstyle
+    "D417", # Missing argument descriptions in Docstrings
+    "I",    # isort
+    "UP",   # pyupgrade
+    "C4",   # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "A001", # flake8-builtins
+    "RUF",  # ruff-specific rules
+    "T100", # no breakpoints
+    "TC",   # flake8-type-checking
+    "TID",  # flake8-tidy-imports
+]
+ignore = [
+    "D100", # Missing docstring in public module
+    "D104", # Missing docstring in public package
+    "D401", # First line should be in imperative mood (remove to opt in)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["D", "S"]
+
+# https://docs.astral.sh/ruff/formatter/
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = false # default is false
+
+# https://mypy.readthedocs.io/en/stable/config_file.html
+[tool.mypy]
+strict = true
+disallow_any_generics = false
+disallow_subclassing_any = false
+show_error_codes = true
+pretty = true
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.10"
+enableExperimentalFeatures = true
+reportMissingImports = false
+reportMissingModuleSource = false
+verboseOutput = true
+venv = ".venv"

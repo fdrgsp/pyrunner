@@ -22,8 +22,18 @@ def _call(func: str, *args: str) -> str:
 
 select_runner_cases = [
     ("ipynb uses juv", "notebook.ipynb", "", "uvx juv run"),
-    ("py with marimo dep", "nb.py", '# dependencies = [\n#   "marimo",\n# ]', "uvx marimo edit --sandbox"),
-    ("py without marimo", "script.py", '# dependencies = [\n#   "numpy",\n# ]', "uv run"),
+    (
+        "py with marimo dep",
+        "nb.py",
+        '# dependencies = [\n#   "marimo",\n# ]',
+        "uvx marimo edit --sandbox",
+    ),
+    (
+        "py without marimo",
+        "script.py",
+        '# dependencies = [\n#   "numpy",\n# ]',
+        "uv run",
+    ),
     ("py empty content", "script.py", "", "uv run"),
 ]
 
