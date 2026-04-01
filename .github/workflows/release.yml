@@ -49,16 +49,16 @@ jobs:
           mkdir -p dist
 
           # macOS (.app bundle)
-          TARGET="dist/launcher723-${TAG}-mac/launcher723.app/Contents"
+          TARGET="dist/pyrunner-${TAG}-mac/pyrunner.app/Contents"
           mkdir -p "$TARGET/MacOS" "$TARGET/Resources"
           cp macos/Info.plist "$TARGET/Info.plist"
           cp macos/launch "$TARGET/MacOS/launch"
           cp macos/icon.icns "$TARGET/Resources/icon.icns"
-          cd dist && zip -r "launcher723-${TAG}-mac.zip" "launcher723-${TAG}-mac/" && cd ..
+          cd dist && zip -r "pyrunner-${TAG}-mac.zip" "pyrunner-${TAG}-mac/" && cd ..
 
           # Windows (.exe)
-          cd windows && GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o "../dist/launcher723-${TAG}-windows/launcher723.exe" . && cd ..
-          cd dist && zip -r "launcher723-${TAG}-windows.zip" "launcher723-${TAG}-windows/" && cd ..
+          cd windows && GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o "../dist/pyrunner-${TAG}-windows/pyrunner.exe" . && cd ..
+          cd dist && zip -r "pyrunner-${TAG}-windows.zip" "pyrunner-${TAG}-windows/" && cd ..
 
       - name: Publish latest pre-release (main push)
         if: github.ref_type == 'branch'

@@ -1,4 +1,4 @@
-<h1><img src="icon.png" width="100" alt="launcher723 icon"/><br/>launcher723</h1>
+<h1><img src="icon.png" width="100" alt="pyrunner icon"/><br/>pyrunner</h1>
 
 A standalone desktop launcher for **Jupyter** and **marimo** notebooks, and **plain Python scripts** — double-click to run any `.ipynb` or `.py` file that has inline dependencies, no Python installation required.
 
@@ -8,7 +8,7 @@ Files must declare their dependencies using the [PEP 723](https://peps.python.or
 
 | macOS                                                                                                              | Windows                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| 🚀 [Download .app](https://github.com/fdrgsp/launcher723/releases/download/latest/launcher723-latest-mac.zip)      | 🚀 [Download .exe](https://github.com/fdrgsp/launcher723/releases/download/latest/launcher723-latest-windows.zip)        |
+| 🚀 [Download .app](https://github.com/fdrgsp/pyrunner/releases/download/latest/pyrunner-latest-mac.zip)      | 🚀 [Download .exe](https://github.com/fdrgsp/pyrunner/releases/download/latest/pyrunner-latest-windows.zip)        |
 
 ## How it works
 
