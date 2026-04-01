@@ -8,7 +8,7 @@ dependencies = []
 dev = [
     "prek>=0.3.5",
     "pytest>=8.0",
-    "pyright>=1.1.392.post0",
+    "mypy>=1.15.0",
     "ruff>=0.8.3",
     "rust-just>=1.38.0",
 ]
@@ -57,12 +57,11 @@ ignore = [
 docstring-code-format = true
 skip-magic-trailing-comma = false # default is false
 
-# pyright
-[tool.pyright]
-include = ["_build_local.py", "tests"]
-pythonVersion = "3.10"
-enableExperimentalFeatures = true
-reportMissingImports = false
-reportMissingModuleSource = false
-verboseOutput = true
-venv = ".venv"
+# mypy
+[tool.mypy]
+files = ["_build_local.py", "tests"]
+strict = true
+disallow_any_generics = false
+disallow_subclassing_any = false
+show_error_codes = true
+pretty = true
