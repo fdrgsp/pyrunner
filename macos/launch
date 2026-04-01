@@ -60,10 +60,7 @@ rm -f "$RUNNER"
 SCRIPT
   chmod +x "$RUNNER"
 
-  osascript -e "tell application \"Terminal\"
-    activate
-    do script \"'${RUNNER}'\"
-  end tell"
+  open -a Terminal "$RUNNER"
 }
 
 # Allow sourcing this file for testing without running the launcher.
