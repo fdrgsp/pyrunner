@@ -1,8 +1,18 @@
 #!/bin/bash
-# macOS .app launcher — opens a file picker for .ipynb/.py notebook files,
-# then runs with uvx juv run (Jupyter) or uvx marimo edit --sandbox (marimo).
+# macOS .app launcher — opens a file picker for .ipynb/.py files, then runs
+# with uvx juv run (Jupyter), uvx marimo edit --sandbox (marimo), or uv run (plain .py).
 
-APP_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BUNDLE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+APP_DIR="$(dirname "$BUNDLE_DIR")"
+
+# macOS App Translocation: quarantined apps silently run from a random temp path,
+# so APP_DIR would point to an empty temp folder instead of the real location.
+# Detect this and resolve the original .app path via Spotlight.
+if [[ "$APP_DIR" == /private/var/folders/*/AppTranslocation/* ]]; then
+  ORIG_BUNDLE="$(mdfind "kMDItemCFBundleIdentifier == 'com.launcher723.app'" 2>/dev/null | head -1)"
+  [ -d "$ORIG_BUNDLE" ] && APP_DIR="$(dirname "$ORIG_BUNDLE")"
+fi
 
 # Check if exactly one notebook exists next to the .app (skip picker if so)
 NOTEBOOK=""

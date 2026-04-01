@@ -1,3 +1,6 @@
+// Windows .exe launcher — opens a file picker for .ipynb/.py files, then runs
+// with uvx juv run (Jupyter), uvx marimo edit --sandbox (marimo), or uv run (plain .py).
+
 package main
 
 import (
