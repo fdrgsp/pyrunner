@@ -29,10 +29,23 @@ def build_mac() -> Path:
     shutil.copy2(ROOT / "macos" / "Info.plist", app / "Info.plist")
     shutil.copy2(ROOT / "macos" / "icon.icns", app / "Resources" / "icon.icns")
 
-    launch_src = ROOT / "macos" / "launch"
-    launch_dst = app / "MacOS" / "launch"
-    shutil.copy2(launch_src, launch_dst)
-    launch_dst.chmod(0o755)
+    # Compile universal binary stub so LaunchServices sees a native executable
+    # (avoids Rosetta prompt on Apple Silicon)
+    launch_bin = app / "MacOS" / "launch"
+    subprocess.run(
+        [
+            "cc",
+            "-arch", "arm64",
+            "-arch", "x86_64",
+            "-o", str(launch_bin),
+            str(ROOT / "macos" / "launch.c"),
+        ],
+        check=True,
+    )
+    launch_bin.chmod(0o755)
+
+    shutil.copy2(ROOT / "macos" / "launch.sh", app / "MacOS" / "launch.sh")
+    (app / "MacOS" / "launch.sh").chmod(0o755)
 
     # Remove quarantine attribute to avoid Gatekeeper warning
     subprocess.run(["xattr", "-cr", str(app.parent)], check=False)

@@ -11,16 +11,47 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
+  build-mac:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Make launcher executable
-        run: chmod +x macos/launch
+      - name: Set release tag
+        id: tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build macOS .app
+        env:
+          TAG: ${{ steps.tag.outputs.value }}
+        run: |
+          TARGET="dist/pyrunner-${TAG}-mac/pyrunner.app/Contents"
+          mkdir -p "$TARGET/MacOS" "$TARGET/Resources"
+          cp macos/Info.plist "$TARGET/Info.plist"
+          cp macos/icon.icns "$TARGET/Resources/icon.icns"
+
+          # Compile universal binary stub (arm64 + x86_64)
+          cc -arch arm64 -arch x86_64 -o "$TARGET/MacOS/launch" macos/launch.c
+          chmod +x "$TARGET/MacOS/launch"
+
+          cp macos/launch.sh "$TARGET/MacOS/launch.sh"
+          chmod +x "$TARGET/MacOS/launch.sh"
+
+          cd dist && zip -r "pyrunner-${TAG}-mac.zip" "pyrunner-${TAG}-mac/" && cd ..
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-build
+          path: dist/*.zip
+
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Set release tag
         id: tag
@@ -42,19 +73,11 @@ jobs:
           go-winres make
           cd ..
 
-      - name: Build packages
+      - name: Build Windows packages
         env:
           TAG: ${{ steps.tag.outputs.value }}
         run: |
           mkdir -p dist
-
-          # macOS (.app bundle)
-          TARGET="dist/pyrunner-${TAG}-mac/pyrunner.app/Contents"
-          mkdir -p "$TARGET/MacOS" "$TARGET/Resources"
-          cp macos/Info.plist "$TARGET/Info.plist"
-          cp macos/launch "$TARGET/MacOS/launch"
-          cp macos/icon.icns "$TARGET/Resources/icon.icns"
-          cd dist && zip -r "pyrunner-${TAG}-mac.zip" "pyrunner-${TAG}-mac/" && cd ..
 
           # Windows amd64 (.exe)
           cd windows && GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o "../dist/pyrunner-${TAG}-windows-amd64/pyrunner.exe" . && cd ..
@@ -63,6 +86,22 @@ jobs:
           # Windows arm64 (.exe)
           cd windows && GOOS=windows GOARCH=arm64 go build -ldflags "-s -w" -o "../dist/pyrunner-${TAG}-windows-arm64/pyrunner.exe" . && cd ..
           cd dist && zip -r "pyrunner-${TAG}-windows-arm64.zip" "pyrunner-${TAG}-windows-arm64/" && cd ..
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: dist/*.zip
+
+  release:
+    needs: [build-mac, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
 
       - name: Publish latest pre-release (main push)
         if: github.ref_type == 'branch'
