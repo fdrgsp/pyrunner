@@ -18,8 +18,6 @@ def _call(func: str, *args: str) -> str:
     return _bash(f'source "{LAUNCH_SCRIPT}" && {func} {quoted}')
 
 
-
-
 # ── select_runner ──────────────────────────────────────────────────────────────
 
 select_runner_cases = [
@@ -83,10 +81,26 @@ def test_select_runner(tmp_path, desc, filename, content, expected):
 marimo_mode_cases = [
     ("no script block", '# dependencies = [\n#   "marimo",\n# ]', ""),
     ("run mode", '# /// script\n# [pyrunner]\n# marimo-mode = "run"\n# ///\n', "run"),
-    ("edit mode", '# /// script\n# [pyrunner]\n# marimo-mode = "edit"\n# ///\n', "edit"),
-    ("single-quoted run mode", "# /// script\n# [pyrunner]\n# marimo-mode = 'run'\n# ///\n", "run"),
-    ("no pyrunner section", '# /// script\n# dependencies = [\n#   "marimo",\n# ]\n# ///\n', ""),
-    ("section without marimo-mode", '# /// script\n# [pyrunner]\n# other_key = "value"\n# ///\n', ""),
+    (
+        "edit mode",
+        '# /// script\n# [pyrunner]\n# marimo-mode = "edit"\n# ///\n',
+        "edit",
+    ),
+    (
+        "single-quoted run mode",
+        "# /// script\n# [pyrunner]\n# marimo-mode = 'run'\n# ///\n",
+        "run",
+    ),
+    (
+        "no pyrunner section",
+        '# /// script\n# dependencies = [\n#   "marimo",\n# ]\n# ///\n',
+        "",
+    ),
+    (
+        "section without marimo-mode",
+        '# /// script\n# [pyrunner]\n# other_key = "value"\n# ///\n',
+        "",
+    ),
     (
         "marimo-mode after other keys",
         '# /// script\n# [pyrunner]\n# other = "x"\n# marimo-mode = "run"\n# ///\n',
@@ -101,5 +115,3 @@ def test_marimo_mode(tmp_path, desc, content, expected):
     path.write_text(content)
     actual = _call("marimo_mode", str(path))
     assert actual == expected
-
-

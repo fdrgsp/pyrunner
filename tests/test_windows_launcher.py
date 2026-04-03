@@ -69,5 +69,3 @@ def test_select_runner(go_available, case):
 )
 def test_marimo_mode(go_available, case):
     _go_test(go_available, f"TestMarimoMode/{case}")
-
-
