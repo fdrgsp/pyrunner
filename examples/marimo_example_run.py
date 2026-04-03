@@ -28,26 +28,28 @@ def _(mo):
     mo.md(r"""
     # Example Notebook
 
-    Replace this notebook with your own. Dependencies are declared in the hidden cell above — use `juv add notebook.ipynb <package>` to add more.
+    Replace this notebook with your own. Dependencies are declared in the hidden cell
+    above. Use `juv add notebook.ipynb <package>` to add more or manually edit the cell.
     """)
     return
 
 
 @app.cell
-def _():
+def _(mo):
+    freq = mo.ui.slider(1, 10, value=1, step=0.5, label="Frequency")
+    freq
+    return (freq,)
+
+
+@app.cell
+def _(freq):
     import numpy as np
     import matplotlib.pyplot as plt
 
     x = np.linspace(0, 2 * np.pi, 300)
     fig, ax = plt.subplots()
-    ax.plot(x, np.sin(x))
-    ax.set_title("Hello from juv + PEP 723")
-    return
-
-
-@app.cell
-def _():
-    print("Done!")
+    ax.plot(x, np.sin(freq.value * x))
+    ax.set_title("Hello from pyrunner!")
     return
 
 
