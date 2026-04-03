@@ -38,7 +38,7 @@ Files must declare their dependencies using the [PEP 723](https://peps.python.or
 ### What users need
 
 - An internet connection on first run (to fetch `uv` and packages — cached locally after that)
-- Nothing else — no Python, no conda, no pip
+- Nothing else, no Python, no conda, no pip!
 
 ---
 
