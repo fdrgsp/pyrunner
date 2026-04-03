@@ -43,11 +43,11 @@ def _(mo):
 
 @app.cell
 def _(freq):
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
     x = np.linspace(0, 2 * np.pi, 300)
-    fig, ax = plt.subplots()
+    _fig, ax = plt.subplots()
     ax.plot(x, np.sin(freq.value * x))
     ax.set_title("Hello from pyrunner!")
     return
